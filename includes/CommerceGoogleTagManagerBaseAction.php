@@ -21,7 +21,7 @@ abstract class CommerceGoogleTagManagerBaseAction extends RulesActionHandlerBase
   protected static function getDefaultsInfo() {
     return array(
       'group' => t('Commerce Google-TagManager'),
-      'name' => static::class,
+      'name' => get_called_class(),
     );
   }
 

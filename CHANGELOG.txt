@@ -1,5 +1,6 @@
 7.x-2.x, xxxx-xx-xx
 -------------------
+- Fixed compatibility with PHP 5.4
 
 7.x-2.0-rc3, 2016-06-29
 -----------------------
