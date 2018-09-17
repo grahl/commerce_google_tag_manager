@@ -1,40 +1,35 @@
 <?php
+
 /**
  * @file
- * Adds the required Javascript to the checkout completion page to allow
- * e-commerce statistics tracking through Google Tag Manager.
+ * Adds the required Javascript to the checkout completion page.
  *
  * Based on Commerce Google Analytics module.
  */
 
 /**
- * Implements hook_rules_directory();
+ * Implements hook_page_attachments_alter().
  */
-function commerce_google_tag_manager_rules_directory() {
-  return 'includes/rules';
-}
-
-/**
- * Implements hook_page_build().
- */
-function commerce_google_tag_manager_page_build(&$page) {
-
+function commerce_google_tag_manager_page_attachments_alter(array &$attachments) {
   if (!isset($_SESSION['commerce_google_tag_manager']) || !is_array($_SESSION['commerce_google_tag_manager'])) {
     return;
   }
 
-  $data = &$_SESSION['commerce_google_tag_manager'];
+  $data = $_SESSION['commerce_google_tag_manager'];
 
   // Allow other modules to alter aggregated event-data just before pushing to
   // the DataLayer.
-  drupal_alter('commerce_google_tag_manager_commerce_data_aggregated', $data);
+  \Drupal::moduleHandler()->alter('commerce_google_tag_manager_commerce_data_aggregated', $data);
 
   foreach ($data as $key => $script) {
     // Data escaped via drupal_json_encode().
-    $page['page_top']['#attached']['js'][] = array(
-      'type' => 'inline',
-      'data' => $script,
-    );
-    unset($data[$key]);
+    $attachments['#attached']['html_head'][] = [
+      [
+        '#tag' => 'script',
+        '#value' => $script,
+      ],
+      'google_tag_commerce',
+    ];
+    unset($_SESSION['commerce_google_tag_manager'][$key]);
   }
 }

@@ -1,0 +1,10 @@
+services:
+  commerce_google_tag_manager.events:
+    class: Drupal\commerce_google_tag_manager\EventSubscriber\EventSubscriber
+    arguments: ['@module_handler', '@config.factory']
+    tags:
+      - { name: event_subscriber }
+  commerce_google_tag_manager.checkout_route_subscriber:
+    class: Drupal\commerce_google_tag_manager\Routing\Checkout
+    tags:
+      - { name: event_subscriber }
