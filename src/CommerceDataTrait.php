@@ -58,7 +58,7 @@ trait CommerceDataTrait {
     /** @var \Drupal\commerce_product\Entity\ProductVariationInterface $purchased_entity */
     $purchased_entity = $order_item->getPurchasedEntity();
     $product_data = [
-      'id' => $purchased_entity->getProductId(),
+      'id' => $purchased_entity->getSku(),
       'name' => $purchased_entity->getTitle(),
       'category' => '',
       // TODO add variant back, was $item->commerce_product->getBundle().
