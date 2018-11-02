@@ -64,7 +64,7 @@ trait CommerceDataTrait {
       // TODO add variant back, was $item->commerce_product->getBundle().
       'variant' => '',
       'price' => $purchased_entity->getPrice()->getNumber(),
-      'quantity' => $order_item->getQuantity(),
+      'quantity' => (int) $order_item->getQuantity(),
     ];
 
     // Allow other modules to alter this product data.
