@@ -59,10 +59,9 @@ trait CommerceDataTrait {
     $purchased_entity = $order_item->getPurchasedEntity();
     $product_data = [
       'id' => $purchased_entity->getSku(),
-      'name' => $purchased_entity->getTitle(),
+      'name' => $purchased_entity->getProduct()->getTitle(),
       'category' => '',
-      // TODO add variant back, was $item->commerce_product->getBundle().
-      'variant' => '',
+      'variant' => $purchased_entity->getTitle(),
       'price' => $purchased_entity->getPrice()->getNumber(),
       'quantity' => (int) $order_item->getQuantity(),
     ];
