@@ -55,7 +55,7 @@ trait CommerceDataTrait {
    *   Processed data for GA.
    */
   protected function getLineItemData(OrderItemInterface $order_item) {
-    /** @var ProductVariationInterface $purchased_entity */
+    /** @var \Drupal\commerce_product\Entity\ProductVariationInterface $purchased_entity */
     $purchased_entity = $order_item->getPurchasedEntity();
     $product_data = [
       'id' => $purchased_entity->getProductId(),
