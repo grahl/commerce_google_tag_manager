@@ -84,8 +84,6 @@ class EventSubscriber implements EventSubscriberInterface {
    *
    * @param \Drupal\state_machine\Event\WorkflowTransitionEvent $event
    *   The transition event.
-   *
-   * @TODO: Find out if this can be variable, be triggered elsewhere.
    */
   public function purchase(WorkflowTransitionEvent $event) {
     $this->eventContext = 'purchase';
@@ -99,14 +97,50 @@ class EventSubscriber implements EventSubscriberInterface {
     }
 
     $data = [
-      'currencyCode' => $order->getTotalPrice()->getCurrencyCode(),
-      'purchase' => [
-        'actionField' => $this->getOrderData($order),
-        'products' => $this->getLineItemsData($order->getItems()),
+      'actionField' => [
+        'id' => $order->getOrderNumber(),
+        'affiliation' => $order->getStore()->getName(),
+        'revenue' => $this->formatPrice((float) $order->getTotalPrice()->getNumber()),
+        'shipping' => $this->formatPrice($this->calculateShipping($order)),
       ],
+      'products' => $this->getLineItemsData($order->getItems()),
     ];
 
     $this->pushCommerceData($data);
+  }
+
+  /**
+   * @param float $price
+   *
+   * @return string
+   */
+  private function formatPrice($price) {
+    if ($price == 0) {
+      return '0';
+    }
+
+    return number_format((float) $price, 2);
+  }
+
+  /**
+   * Calculate the total shipping costs from the given order.
+   *
+   * @param \Drupal\commerce_order\Entity\OrderInterface $order
+   *
+   * @return float
+   */
+  private function calculateShipping(OrderInterface $order) {
+    if ($order->hasField('shipments') && !$order->get('shipments')->isEmpty()) {
+      $total = 0;
+      foreach ($order->get('shipments')->referencedEntities() as $shipment) {
+        /** @var \Drupal\commerce_shipping\Entity\ShipmentInterface $shipment */
+        $total += (float) $shipment->getAmount()->getNumber();
+      }
+
+      return $total;
+    }
+
+    return 0;
   }
 
   /**
